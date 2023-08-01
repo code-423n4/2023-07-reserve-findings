@@ -1,0 +1,8 @@
+{
+  "contest": 268,
+  "handle": "RaymondFam",
+  "risk": "3",
+  "title": "Potential Loss of Rewards During Token Transfers in StaticATokenLM.sol",
+  "issueId": 4,
+  "issueUrl": "https://github.com/code-423n4/2023-07-reserve-findings/issues/4"
+}
