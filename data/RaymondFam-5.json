@@ -1,0 +1,8 @@
+{
+  "contest": 268,
+  "handle": "RaymondFam",
+  "risk": "3",
+  "title": "Potential Early Exploit in Morho-Aave ERC4626 Implementation",
+  "issueId": 5,
+  "issueUrl": "https://github.com/code-423n4/2023-07-reserve-findings/issues/5"
+}
