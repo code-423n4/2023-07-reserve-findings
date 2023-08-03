@@ -1,0 +1,8 @@
+{
+  "contest": 268,
+  "handle": "bin2chen",
+  "risk": "3",
+  "title": "ConvexStakingWrapper.sol after shutdown，rewards can be steal",
+  "issueId": 11,
+  "issueUrl": "https://github.com/code-423n4/2023-07-reserve-findings/issues/11"
+}
