@@ -1,0 +1,8 @@
+{
+  "contest": 268,
+  "handle": "bin2chen",
+  "risk": "3",
+  "title": "_claimRewardsOnBehalf() User's rewards may be lost",
+  "issueId": 10,
+  "issueUrl": "https://github.com/code-423n4/2023-07-reserve-findings/issues/10"
+}
