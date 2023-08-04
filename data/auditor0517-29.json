@@ -1,0 +1,8 @@
+{
+  "contest": 268,
+  "handle": "auditor0517",
+  "risk": "2",
+  "title": "Rewards might be locked inside the contract by setting the wrong token.",
+  "issueId": 29,
+  "issueUrl": "https://github.com/code-423n4/2023-07-reserve-findings/issues/29"
+}
