@@ -1,0 +1,8 @@
+{
+  "contest": 268,
+  "handle": "ronnyx2017",
+  "risk": "2",
+  "title": "The Asset.lotPrice doubles the oracle timeout in the worst case",
+  "issueId": 24,
+  "issueUrl": "https://github.com/code-423n4/2023-07-reserve-findings/issues/24"
+}
