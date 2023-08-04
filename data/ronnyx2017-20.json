@@ -1,0 +1,8 @@
+{
+  "contest": 268,
+  "handle": "ronnyx2017",
+  "risk": "3",
+  "title": "RTokenAsset price oracle can return a huge but valid high price when any underlying collateral's price oracle timeout",
+  "issueId": 20,
+  "issueUrl": "https://github.com/code-423n4/2023-07-reserve-findings/issues/20"
+}
