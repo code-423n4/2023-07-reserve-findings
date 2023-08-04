@@ -60,7 +60,24 @@ https://github.com/reserve-protocol/protocol/blob/9ee60f142f9f5c1fe8bc50eef915cf
 -     * @notice Compute the pending in RAY (rounded down). Pending is the amount to add (not yet unclaimed) rewards in RAY (rounded down).
 +     * @notice Compute the pending in RAY (rounded down). Pending is the amount to add (not yet claimed) rewards in RAY (rounded down).
 ```
+https://github.com/reserve-protocol/protocol/blob/9ee60f142f9f5c1fe8bc50eef915cf33124a534f/contracts/plugins/assets/compoundv3/CusdcV3Wrapper.sol#L73
 
+```diff
+-    /// Takes `amount` fo cUSDCv3 from `src` and deposits to `dst` account in the wrapper.
++    /// Takes `amount` of cUSDCv3 from `src` and deposits to `dst` account in the wrapper.
+```
+https://github.com/reserve-protocol/protocol/blob/9ee60f142f9f5c1fe8bc50eef915cf33124a534f/contracts/plugins/assets/curve/PoolTokens.sol#L117
+
+```diff
+-        // an immutable array so we do not have store the token feeds in the blockchain. This is
++        // an immutable array so we do not have to store the token feeds in the blockchain. This is
+```
+https://github.com/reserve-protocol/protocol/blob/9ee60f142f9f5c1fe8bc50eef915cf33124a534f/contracts/plugins/assets/curve/PoolTokens.sol#L138
+
+```diff
+-        // I know this lots extremely verbose and quite silly, but it actually makes sense:
++        // I know this is extremely verbose and quite silly, but it actually makes sense:
+```
 ## `FiatCollateral.alreadyDefaulted` turns obsolete when block.timestamp > type(uint48).max
 Although this will take a very long time to happen, the following function will default to `true`, i.e. `DISABLED` when `block.timestamp` exceeds `type(uint48).max` considering `_whenDefault` would at most be assigned `NEVER`, which is `type(uint48).max`.  
 
@@ -104,5 +121,50 @@ https://github.com/reserve-protocol/protocol/blob/9ee60f142f9f5c1fe8bc50eef915cf
                 lotHigh = savedHighPrice.mul(lotMultiplier);
             }
 ```
-## Immutable over constant
+## Comment and code mismatch on dimensional analysis
+The comment below is missing out the units pertaining to the division by [`one`](https://github.com/reserve-protocol/protocol/blob/9ee60f142f9f5c1fe8bc50eef915cf33124a534f/contracts/plugins/assets/erc20/RewardableERC20.sol#L22). 
 
+https://github.com/reserve-protocol/protocol/blob/9ee60f142f9f5c1fe8bc50eef915cf33124a534f/contracts/plugins/assets/erc20/RewardableERC20.sol#L65-L66
+
+```diff
+-            // {qRewards} = {qRewards/share} * {qShare}
+-            // {qRewards} = {qRewards/share} * {qShare} / {qShare/share}
+            _accumuatedRewards += (delta * shares) / one;
+```
+## Capitalized state variables
+State variable names should be Camel-cased instead of fully capitalized (typically used on constants and immutables).
+
+Here are some of the instances entailed:
+
+https://github.com/reserve-protocol/protocol/blob/9ee60f142f9f5c1fe8bc50eef915cf33124a534f/contracts/plugins/assets/aave/StaticATokenLM.sol#L64-L68
+
+```solidity
+    ILendingPool public override LENDING_POOL;
+    IAaveIncentivesController public override INCENTIVES_CONTROLLER;
+    IERC20 public override ATOKEN;
+    IERC20 public override ASSET;
+    IERC20 public override REWARD_TOKEN;
+```
+## Inadequate NatSpec
+Solidity contracts can use a special form of comments, i.e., the Ethereum Natural Language Specification Format (NatSpec) to provide rich documentation for functions, return variables, and more. Please visit the following link for further details:
+
+https://docs.soliditylang.org/en/v0.8.16/natspec-format.html
+
+It's generally incomplete throughout all codebases. Consider fully equipping all contracts with a complete set of NatSpec to better facilitate users/developers interacting with the protocol's smart contracts.
+
+## Non-compliant contract layout with Solidity's Style Guide
+According to Solidity's Style Guide below:
+
+https://docs.soliditylang.org/en/v0.8.17/style-guide.html
+
+In order to help readers identify which functions they can call, and find the constructor and fallback definitions more easily, functions should be grouped according to their visibility and ordered in the following manner:
+
+constructor, receive function (if exists), fallback function (if exists), external, public, internal, private
+
+And, within a grouping, place the `view` and `pure` functions last.
+
+Additionally, inside each contract, library or interface, use the following order:
+
+type declarations, state variables, events, modifiers, functions
+
+Consider adhering to the above guidelines for all contract instances entailed.
