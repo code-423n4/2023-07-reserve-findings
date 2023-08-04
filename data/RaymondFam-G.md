@@ -179,6 +179,24 @@ https://github.com/reserve-protocol/protocol/blob/9ee60f142f9f5c1fe8bc50eef915cf
 -        more = config.feeds.length > 3 && config.feeds[3].length > 0;
 +        more = config.feeds.length > 3;
 ```
+## Use of named returns for local variables saves gas
+You can have further advantages in terms of gas cost by simply using named return values as temporary local variables.
+
+For instance, the code block below may be refactored as follows:
+
+https://github.com/reserve-protocol/protocol/blob/9ee60f142f9f5c1fe8bc50eef915cf33124a534f/contracts/plugins/assets/compoundv3/CusdcV3Wrapper.sol#L225
+
+```diff
+-    function underlyingBalanceOf(address account) public view returns (uint256) {
++    function underlyingBalanceOf(address account) public view returns (uint256 _balance) {
+        uint256 balance = balanceOf(account);
+        if (balance == 0) {
+            return 0;
+        }
+-        return convertStaticToDynamic(safe104(balance));
++        _balance = convertStaticToDynamic(safe104(balance));
+    }
+```
 ## Function order affects gas consumption
 The order of function will also have an impact on gas consumption. Because in smart contracts, there is a difference in the order of the functions. Each position will have an extra 22 gas. The order is dependent on method ID. So, if you rename the frequently accessed function to more early method ID, you can save gas cost. Please visit the following site for further information:
 
