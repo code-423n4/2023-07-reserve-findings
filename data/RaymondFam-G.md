@@ -197,6 +197,17 @@ https://github.com/reserve-protocol/protocol/blob/9ee60f142f9f5c1fe8bc50eef915cf
 +        _balance = convertStaticToDynamic(safe104(balance));
     }
 ```
+## += and -= cost more gas
+`+=` and `-=` generally cost 22 more gas than writing out the assigned equation explicitly. The amount of gas wasted can be quite sizable when repeatedly operated in a loop.
+
+For instance, the `+=` instance below may be refactored as follows:
+
+https://github.com/reserve-protocol/protocol/blob/9ee60f142f9f5c1fe8bc50eef915cf33124a534f/contracts/plugins/assets/compoundv3/CusdcV3Wrapper.sol#L307
+
+```diff
+-            baseSupplyIndex_ += safe64(mulFactor(baseSupplyIndex_, supplyRate * timeDelta));
++            baseSupplyIndex_ = baseSupplyIndex_ + safe64(mulFactor(baseSupplyIndex_, supplyRate * timeDelta));
+```
 ## Function order affects gas consumption
 The order of function will also have an impact on gas consumption. Because in smart contracts, there is a difference in the order of the functions. Each position will have an extra 22 gas. The order is dependent on method ID. So, if you rename the frequently accessed function to more early method ID, you can save gas cost. Please visit the following site for further information:
 
