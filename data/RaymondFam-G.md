@@ -250,3 +250,83 @@ PUSH1 [revert offset]
 JUMPI
 ```
 Disclaimer: There have been several bugs with security implications related to optimizations. For this reason, Solidity compiler optimizations are disabled by default, and it is unclear how many contracts in the wild actually use them. Therefore, it is unclear how well they are being tested and exercised. High-severity security issues due to optimization bugs have occurred in the past. A high-severity bug in the emscripten -generated solc-js compiler used by Truffle and Remix persisted until late 2018. The fix for this bug was not reported in the Solidity CHANGELOG. Another high-severity optimization bug resulting in incorrect bit shift results was patched in Solidity 0.5.6. Please measure the gas savings from optimizations, and carefully weigh them against the possibility of an optimization-related bug. Also, monitor the development and adoption of Solidity compiler optimizations to assess their maturity.
+
+## Constructors can be marked payable
+Payable functions cost less gas to execute, since the compiler does not have to add extra checks to ensure that a payment wasn't provided. A constructor can safely be marked as payable, since only the deployer would be able to pass funds, and the project itself would not pass any funds.
+
+Here are some of the instances entailed:
+
+https://github.com/reserve-protocol/protocol/blob/9ee60f142f9f5c1fe8bc50eef915cf33124a534f/contracts/plugins/assets/aave/ATokenFiatCollateral.sol#L42
+
+```solidity
+    constructor(CollateralConfig memory config, uint192 revenueHiding)
+```
+https://github.com/reserve-protocol/protocol/blob/9ee60f142f9f5c1fe8bc50eef915cf33124a534f/contracts/plugins/assets/EURFiatCollateral.sol#L23-L27
+
+```solidity
+    constructor(
+        CollateralConfig memory config,
+        AggregatorV3Interface targetUnitChainlinkFeed_,
+        uint48 targetUnitOracleTimeout_
+    ) FiatCollateral(config) {
+```
+https://github.com/reserve-protocol/protocol/blob/9ee60f142f9f5c1fe8bc50eef915cf33124a534f/contracts/plugins/assets/FiatCollateral.sol#L62-L70
+
+```solidity
+    constructor(CollateralConfig memory config)
+        Asset(
+            config.priceTimeout,
+            config.chainlinkFeed,
+            config.oracleError,
+            config.erc20,
+            config.maxTradeVolume,
+            config.oracleTimeout
+        )
+```
+## Use assembly for small keccak256 hashes, in order to save gas
+If the arguments to the encode call can fit into the scratch space (two words or fewer), then it's more efficient to use assembly to generate the hash (80 gas): keccak256(abi.encodePacked(x, y)) -> assembly {mstore(0x00, a); mstore(0x20, b); let hash := keccak256(0x00, 0x40); }
+
+Here are some of the instances entailed:
+
+https://github.com/reserve-protocol/protocol/blob/9ee60f142f9f5c1fe8bc50eef915cf33124a534f/contracts/plugins/assets/aave/StaticATokenLM.sol#L285-L286
+
+```solidity
+                    keccak256(bytes(name())),
+                    keccak256(EIP712_REVISION),
+```
+## Reduce gas usage by moving to Solidity 0.8.19 or later
+Please visit the following link for substantiated details:
+
+https://soliditylang.org/blog/2023/02/22/solidity-0.8.19-release-announcement/#preventing-dead-code-in-runtime-bytecode
+
+And, here are some of the instances entailed:
+
+https://github.com/reserve-protocol/protocol/blob/9ee60f142f9f5c1fe8bc50eef915cf33124a534f/contracts/plugins/assets/aave/StaticATokenLM.sol#L2
+
+```solidity
+pragma solidity 0.6.12;
+```
+https://github.com/reserve-protocol/protocol/blob/9ee60f142f9f5c1fe8bc50eef915cf33124a534f/contracts/plugins/assets/aave/StaticATokenErrors.sol
+
+```solidity
+pragma solidity 0.6.12;
+```
+## Using this to access functions results in an external call, wasting gas
+External calls have an overhead of 100 gas, which can be avoided by not referencing the function using this. Contracts are [allowed](https://docs.soliditylang.org/en/latest/contracts.html#function-overriding) to override their parents' functions and change the visibility from external to public, so make this change if it's required in order to call the function internally.
+
+Here are some of the instances entailed:
+
+https://github.com/reserve-protocol/protocol/blob/9ee60f142f9f5c1fe8bc50eef915cf33124a534f/contracts/plugins/assets/AppreciatingFiatCollateral.sol#L104
+
+```solidity
+        try this.tryPrice() returns (uint192 low, uint192 high, uint192 pegPrice) {
+```
+https://github.com/reserve-protocol/protocol/blob/9ee60f142f9f5c1fe8bc50eef915cf33124a534f/contracts/plugins/assets/Asset.sol
+
+```solidity
+89:        try this.tryPrice() returns (uint192 low, uint192 high, uint192) {
+
+113:        try this.tryPrice() returns (uint192 low, uint192 high, uint192) {
+
+129:        try this.tryPrice() returns (uint192 low, uint192 high, uint192) {
+```
