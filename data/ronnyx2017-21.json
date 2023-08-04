@@ -1,0 +1,8 @@
+{
+  "contest": 268,
+  "handle": "ronnyx2017",
+  "risk": "3",
+  "title": "User can't redeem from RToken based on CurveStableRTokenMetapoolCollateral when any underlying collateral of paired RToken's price oracle is offline(timeout)",
+  "issueId": 21,
+  "issueUrl": "https://github.com/code-423n4/2023-07-reserve-findings/issues/21"
+}
