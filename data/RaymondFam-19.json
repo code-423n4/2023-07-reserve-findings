@@ -1,0 +1,8 @@
+{
+  "contest": 268,
+  "handle": "RaymondFam",
+  "risk": "3",
+  "title": "Cross-Function Reentrancy Vulnerability Leading to Unintended Token Minting in `RewardableERC20Wrapper.deposit`",
+  "issueId": 19,
+  "issueUrl": "https://github.com/code-423n4/2023-07-reserve-findings/issues/19"
+}
