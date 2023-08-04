@@ -1,0 +1,8 @@
+{
+  "contest": 268,
+  "handle": "sces60107",
+  "risk": "2",
+  "title": "`CTokenV3Collateral._underlyingRefPerTok` should use the reference decimals from underlying Comet.",
+  "issueId": 39,
+  "issueUrl": "https://github.com/code-423n4/2023-07-reserve-findings/issues/39"
+}
