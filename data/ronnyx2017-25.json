@@ -1,0 +1,8 @@
+{
+  "contest": 268,
+  "handle": "ronnyx2017",
+  "risk": "2",
+  "title": "CurveStableMetapoolCollateral.tryPrice returns a huge but valid high price when the price oracle of pairedToken is timeout",
+  "issueId": 25,
+  "issueUrl": "https://github.com/code-423n4/2023-07-reserve-findings/issues/25"
+}
