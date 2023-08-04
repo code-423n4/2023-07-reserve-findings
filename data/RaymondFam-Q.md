@@ -145,6 +145,62 @@ https://github.com/reserve-protocol/protocol/blob/9ee60f142f9f5c1fe8bc50eef915cf
     IERC20 public override ASSET;
     IERC20 public override REWARD_TOKEN;
 ```
+## Modularity on import usages
+For cleaner Solidity code in conjunction with the rule of modularity and modular programming, use named imports with curly braces instead of adopting the global import approach.
+
+For example, the import instances below could be refactored conforming to the suggested standards as follows:
+
+https://github.com/reserve-protocol/protocol/blob/9ee60f142f9f5c1fe8bc50eef915cf33124a534f/contracts/plugins/assets/erc20/RewardableERC20Wrapper.sol#L4-L7
+
+```diff
+- import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
++ import {IERC20Metadata} from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
+- import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
++ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+- import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
++ import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+- import "./RewardableERC20.sol";
++ import {RewardableERC20} from "./RewardableERC20.sol";
+```
+## Array indicies should be referenced via enums rather than via numeric literals
+It has lately been suggested that using enums instead of numbers for designated array indices makes the code logic more descriptive and readable.
+
+Here are some of the instances entailed:
+
+https://github.com/reserve-protocol/protocol/blob/9ee60f142f9f5c1fe8bc50eef915cf33124a534f/contracts/plugins/assets/curve/PoolTokens.sol
+
+```solidity
+132:        token0 = tokens[0];
+133:        token1 = tokens[1];
+
+144:         bool more = config.feeds[0].length > 0;
+
+147:        _t0feed0 = more ? config.feeds[0][0] : AggregatorV3Interface(address(0));
+148:        _t0timeout0 = more && config.oracleTimeouts[0].length > 0 ? config.oracleTimeouts[0][0] : 0;
+149:        _t0error0 = more && config.oracleErrors[0].length > 0 ? config.oracleErrors[0][0] : 0;
+```
+## Use of override is unnecessary
+Starting with Solidity version [0.8.8](https://docs.soliditylang.org/en/v0.8.20/contracts.html#function-overriding], using the override keyword when the function solely overrides an interface function, and the function doesn't exist in multiple base contracts, is unnecessary.
+
+Here are some of the instances entailed:
+
+https://github.com/reserve-protocol/protocol/blob/9ee60f142f9f5c1fe8bc50eef915cf33124a534f/contracts/plugins/assets/NonFiatCollateral.sol#L38-L42
+https://github.com/reserve-protocol/protocol/blob/9ee60f142f9f5c1fe8bc50eef915cf33124a534f/contracts/plugins/assets/SelfReferentialCollateral.sol#L26-L30
+
+```solidity
+    function tryPrice()
+        external
+        view
+        override
+        returns ( 
+```
+https://github.com/reserve-protocol/protocol/blob/9ee60f142f9f5c1fe8bc50eef915cf33124a534f/contracts/plugins/assets/aave/ATokenFiatCollateral.sol
+
+```solidity
+49:    function _underlyingRefPerTok() internal view override returns (uint192) {
+
+56:    function claimRewards() external virtual override(Asset, IRewardable) {
+```
 ## Inadequate NatSpec
 Solidity contracts can use a special form of comments, i.e., the Ethereum Natural Language Specification Format (NatSpec) to provide rich documentation for functions, return variables, and more. Please visit the following link for further details:
 
@@ -168,3 +224,29 @@ Additionally, inside each contract, library or interface, use the following orde
 type declarations, state variables, events, modifiers, functions
 
 Consider adhering to the above guidelines for all contract instances entailed.
+
+## Consider using descriptive constants when passing zero as a function argument
+Passing zero as a function argument can sometimes result in a security issue (e.g. passing zero as the slippage parameter, asset amount, etc). Consider using a `constant` variable with a descriptive name, so it's clear that the argument is intentionally being used, and for the right reasons.
+
+Here are some of the instances entailed:
+
+https://github.com/reserve-protocol/protocol/blob/9ee60f142f9f5c1fe8bc50eef915cf33124a534f/contracts/plugins/assets/aave/StaticATokenLM.sol#L128
+
+```solidity
+        return _withdraw(msg.sender, recipient, amount, 0, toUnderlying);
+```
+https://github.com/reserve-protocol/protocol/blob/9ee60f142f9f5c1fe8bc50eef915cf33124a534f/contracts/plugins/assets/aave/StaticATokenLM.sol#L139
+
+```solidity
+        return _withdraw(msg.sender, recipient, 0, amount, toUnderlying);
+```
+## Interfaces should be defined in separate files from their usage
+The interfaces below should be defined in separate files, so that it's easier for future projects to import them, and to avoid duplication later on if they need to be used elsewhere in the project.
+
+Here is one specific instance entailed that has been embedded in ATokenFiatCollateral.sol:
+
+https://github.com/reserve-protocol/protocol/blob/9ee60f142f9f5c1fe8bc50eef915cf33124a534f/contracts/plugins/assets/aave/ATokenFiatCollateral.sol#L10
+
+```solidity
+interface IStaticAToken is IERC20Metadata {
+```
