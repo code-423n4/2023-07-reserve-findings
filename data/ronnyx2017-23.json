@@ -1,0 +1,8 @@
+{
+  "contest": 268,
+  "handle": "ronnyx2017",
+  "risk": "2",
+  "title": "CBEthCollateral and AnkrStakedEthCollateral _underlyingRefPerTok is incorrect",
+  "issueId": 23,
+  "issueUrl": "https://github.com/code-423n4/2023-07-reserve-findings/issues/23"
+}
