@@ -2809,8 +2809,7 @@ Decimal
 **[bin3chen (warden) commented](https://github.com/code-423n4/2023-09-reserve-mitigation-findings/issues/19#issuecomment-1751982030):**
 > My personal understanding is that this is an acceptable simple solution.
 >
-> See mitigation description for details in [Issue
- #9](https://github.com/code-423n4/2023-09-reserve-mitigation-findings/issues/9):
+> See mitigation description for details in [Issue `#9`](https://github.com/code-423n4/2023-09-reserve-mitigation-findings/issues/9):
 >
 > ```
 > This is a simple way to fix. Some rewards might be locked inside the contract. But it's not fair to the user that the rewards should be allocated to the next time. The next totalSupply would be different.
